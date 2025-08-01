@@ -6,7 +6,7 @@ from typing import List, Optional
 from slack_bolt import App
 from slack_sdk.errors import SlackApiError
 
-from ..database.connection import get_database
+from database.connection import get_database
 
 
 class RouletteService:
@@ -150,7 +150,7 @@ class RouletteService:
         status_emoji = "✅" if config.enabled else "⏸️"
         status_text = "enabled" if config.enabled else "disabled"
 
-        from ..database.models import DAY_DISPLAY_NAMES
+        from database.models import DAY_DISPLAY_NAMES
 
         day_name = DAY_DISPLAY_NAMES.get(config.day, config.day.title())
 

@@ -5,9 +5,9 @@ import os
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
-from .database.connection import init_database
-from .services.roulette import RouletteService
-from .services.scheduler import SchedulerService
+from database.connection import init_database
+from services.roulette import RouletteService
+from services.scheduler import SchedulerService
 
 
 class WeeklyRouletteBot:
@@ -40,9 +40,9 @@ class WeeklyRouletteBot:
     def _register_handlers(self) -> None:
         """Register all Slack event handlers."""
         # Import handlers here to avoid circular imports
-        from .handlers.actions import register_action_handlers
-        from .handlers.commands import register_command_handlers
-        from .handlers.events import register_event_handlers
+        from handlers.actions import register_action_handlers
+        from handlers.commands import register_command_handlers
+        from handlers.events import register_event_handlers
 
         # Register all handlers
         register_event_handlers(self.app, self.roulette_service)

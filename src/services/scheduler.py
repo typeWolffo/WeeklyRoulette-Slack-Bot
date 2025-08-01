@@ -7,8 +7,8 @@ from typing import Dict, List
 
 import schedule
 
-from ..database.connection import get_database
-from ..database.models import ChannelConfig
+from database.connection import get_database
+from database.models import ChannelConfig
 from .roulette import RouletteService
 
 

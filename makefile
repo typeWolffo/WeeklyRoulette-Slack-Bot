@@ -32,10 +32,10 @@ clean: ## Clean up cache files
 	find . -type d -name ".mypy_cache" -delete
 
 run: ## Run the bot locally
-	poetry run python -m src.weeklyroulette_bot.main
+	PYTHONPATH=src poetry run python -m main
 
 dev: ## Run with auto-reload (for development)
-	poetry run watchmedo auto-restart --patterns="*.py" --recursive -- python -m src.weeklyroulette_bot.main
+	PYTHONPATH=src poetry run watchmedo auto-restart --patterns="*.py" --recursive -- python -m main
 
 shell: ## Activate Poetry environment (Poetry 2.0+ compatible)
 	@echo "Poetry 2.0+ doesn't have 'shell' command."
@@ -44,7 +44,7 @@ shell: ## Activate Poetry environment (Poetry 2.0+ compatible)
 	@echo "source $(poetry env info --path)/bin/activate"
 
 setup-db: ## Initialize database
-	poetry run python -c "from src.weeklyroulette_bot.database.connection import init_database; init_database()"
+	poetry run python -c "from src.database.connection import init_database; init_database()"
 
 check: format lint test ## Run all checks (format, lint, test)
 

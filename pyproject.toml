@@ -16,7 +16,7 @@ name = "weeklyroulette-bot"
 version = "0.1.0"
 description = "Slack bot for weekly random user selection"
 authors = ["Your Name <your.email@example.com>"]
-packages = [{ include = "weeklyroulette_bot", from = "src" }]
+packages = [{ include = "*", from = "src" }]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -38,7 +38,7 @@ mypy = "^1.17.0"
 pre-commit = "^4.2.0"
 
 [tool.poetry.scripts]
-weeklyroulette = "weeklyroulette_bot.main:main"
+weeklyroulette = "main:main"
 
 [tool.black]
 line-length = 88

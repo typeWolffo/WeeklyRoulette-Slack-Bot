@@ -3,6 +3,6 @@
 __version__ = "0.1.0"
 __author__ = "Jakub Wilk"
 
-from .bot import create_bot
+from bot import create_bot
 
 __all__ = ["create_bot"]

@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-from ..database.models import ChannelConfig
+from database.models import ChannelConfig
 
 
 class DatabaseConnection:

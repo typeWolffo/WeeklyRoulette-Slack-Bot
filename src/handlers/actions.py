@@ -3,9 +3,9 @@
 from slack_bolt import Ack, App
 from slack_sdk import WebClient
 
-from ..database.models import DAY_DISPLAY_NAMES, ChannelConfig
-from ..services.roulette import RouletteService
-from ..services.scheduler import SchedulerService
+from database.models import DAY_DISPLAY_NAMES, ChannelConfig
+from services.roulette import RouletteService
+from services.scheduler import SchedulerService
 
 
 def register_action_handlers(

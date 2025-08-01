@@ -11,7 +11,7 @@ src_path = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(src_path))
 
 # Import after path manipulation
-from weeklyroulette_bot.bot import create_bot  # noqa: E402
+from bot import create_bot
 
 
 def validate_environment() -> None:

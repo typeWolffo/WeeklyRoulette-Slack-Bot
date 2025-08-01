@@ -4,7 +4,7 @@ from slack_bolt import App
 from slack_bolt.context.say import Say
 from slack_sdk import WebClient
 
-from ..services.roulette import RouletteService
+from services.roulette import RouletteService
 
 
 def register_event_handlers(app: App, roulette_service: RouletteService) -> None:

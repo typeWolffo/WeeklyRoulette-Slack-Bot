@@ -4,8 +4,8 @@ import os
 import tempfile
 from unittest.mock import patch
 
-from src.weeklyroulette_bot.database.connection import DatabaseConnection
-from src.weeklyroulette_bot.database.models import VALID_DAYS, ChannelConfig
+from src.database.connection import DatabaseConnection
+from src.database.models import VALID_DAYS, ChannelConfig
 
 
 class TestChannelConfig:
@@ -115,20 +115,20 @@ class TestBotImport:
     )
     def test_bot_import(self):
         """Test that we can import the bot module."""
-        from src.weeklyroulette_bot.bot import WeeklyRouletteBot
+        from src.bot import WeeklyRouletteBot
 
         assert WeeklyRouletteBot is not None
 
     def test_services_import(self):
         """Test importing services."""
-        from src.weeklyroulette_bot.services import RouletteService, SchedulerService
+        from src.services import RouletteService, SchedulerService
 
         assert RouletteService is not None
         assert SchedulerService is not None
 
     def test_handlers_import(self):
         """Test importing handlers."""
-        from src.weeklyroulette_bot.handlers import actions, commands, events
+        from src.handlers import actions, commands, events
 
         assert events is not None
         assert commands is not None
