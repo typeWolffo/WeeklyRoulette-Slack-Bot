@@ -5,6 +5,7 @@ A Slack bot that automatically selects a random person from channel members on a
 ## Features
 
 - **Automated Weekly Selection**: Randomly picks one person from all channel members
+- **AI-Powered Kudo Rain**: Generates humorous, personalized messages using Claude AI
 - **Flexible Scheduling**: Choose any day of the week and time
 - **Easy Configuration**: Simple slash commands and interactive UI
 - **Test Mode**: Try it out before scheduling
@@ -70,6 +71,7 @@ Edit `.env` file with your Slack tokens:
 SLACK_BOT_TOKEN=xoxb-your-bot-token
 SLACK_APP_TOKEN=xapp-your-app-token
 SLACK_SIGNING_SECRET=your-signing-secret
+ANTHROPIC_API_KEY=your-anthropic-api-key  # Optional: for AI-generated messages
 DATABASE_URL=sqlite:///weeklyroulette.db
 ```
 
@@ -142,6 +144,7 @@ src/weeklyroulette_bot/
 
 - **Python 3.11+** with type hints
 - **Slack Bolt SDK** for official Slack integration
+- **Anthropic Claude API** for AI-generated humorous messages
 - **SQLite** for simple, reliable data storage
 - **Socket Mode** for easy development (no webhooks needed)
 - **Schedule** library for automated execution

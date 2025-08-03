@@ -52,11 +52,22 @@ class DatabaseConnection:
                 day TEXT NOT NULL,
                 time TEXT NOT NULL,
                 enabled INTEGER NOT NULL DEFAULT 1,
+                last_selected_user TEXT,
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL
             )
             """
         )
+
+        # Migration: Add last_selected_user column if it doesn't exist
+        try:
+            cursor.execute(
+                "ALTER TABLE channel_configs ADD COLUMN last_selected_user TEXT"
+            )
+            print("✅ Added last_selected_user column to existing database")
+        except sqlite3.OperationalError:
+            # Column already exists
+            pass
 
         self._connection.commit()
 
@@ -82,23 +93,24 @@ class DatabaseConnection:
             cursor.execute(
                 """
                 UPDATE channel_configs
-                SET day = ?, time = ?, enabled = ?, updated_at = ?
+                SET day = ?, time = ?, enabled = ?, last_selected_user = ?, updated_at = ?
                 WHERE channel_id = ?
             """,
-                (config.day, config.time, int(config.enabled), now, config.channel_id),
+                (config.day, config.time, int(config.enabled), config.last_selected_user, now, config.channel_id),
             )
         else:
             # Insert new config
             cursor.execute(
                 """
-                INSERT INTO channel_configs (channel_id, day, time, enabled, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO channel_configs (channel_id, day, time, enabled, last_selected_user, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     config.channel_id,
                     config.day,
                     config.time,
                     int(config.enabled),
+                    config.last_selected_user,
                     now,
                     now,
                 ),
@@ -112,6 +124,23 @@ class DatabaseConnection:
         cursor.execute("SELECT * FROM channel_configs WHERE enabled = 1")
         rows = cursor.fetchall()
         return [ChannelConfig.from_row(row) for row in rows]
+
+    def update_last_selected_user(self, channel_id: str, user_id: str) -> None:
+        """Update only the last selected user for a channel."""
+        cursor = self.connect().cursor()
+        now = datetime.now().isoformat()
+
+        cursor.execute(
+            """
+            UPDATE channel_configs
+            SET last_selected_user = ?, updated_at = ?
+            WHERE channel_id = ?
+            """,
+            (user_id, now, channel_id)
+        )
+
+        self._connection.commit()
+        print(f"📝 Updated last selected user for channel {channel_id}: {user_id}")
 
     def delete_channel_config(self, channel_id: str) -> bool:
         """Delete channel configuration. Returns True if deleted."""

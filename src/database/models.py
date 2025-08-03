@@ -14,17 +14,25 @@ class ChannelConfig:
     day: str  # monday, tuesday, wednesday, thursday, friday, saturday, sunday
     time: str  # "HH:MM" format (24-hour)
     enabled: bool = True
+    last_selected_user: Optional[str] = None  # Slack User ID of last selected person
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
     @classmethod
     def from_row(cls, row: sqlite3.Row) -> "ChannelConfig":
         """Create ChannelConfig from database row."""
+        # Handle optional last_selected_user column for backward compatibility
+        try:
+            last_selected_user = row["last_selected_user"]
+        except (IndexError, KeyError):
+            last_selected_user = None
+
         return cls(
             channel_id=row["channel_id"],
             day=row["day"],
             time=row["time"],
             enabled=bool(row["enabled"]),
+            last_selected_user=last_selected_user,
             created_at=(
                 datetime.fromisoformat(row["created_at"]) if row["created_at"] else None
             ),
@@ -40,6 +48,7 @@ class ChannelConfig:
             "day": self.day,
             "time": self.time,
             "enabled": self.enabled,
+            "last_selected_user": self.last_selected_user,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

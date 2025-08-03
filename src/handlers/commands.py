@@ -93,7 +93,7 @@ def register_command_handlers(
         # Create time options (business hours)
         time_options = []
         for hour in range(8, 19):  # 8:00 to 18:00
-            for minute in [0, 30]:
+            for minute in [0, 15, 30, 45]:
                 time_str = f"{hour:02d}:{minute:02d}"
                 display_time = f"{hour:02d}:{minute:02d}"
                 time_options.append(
