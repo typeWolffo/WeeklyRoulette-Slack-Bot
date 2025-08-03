@@ -22,11 +22,12 @@ COPY src/ ./src/
 # Create volume for database
 RUN mkdir -p /data
 
-# Set environment variable for database location
+# Set environment variables
 ENV DATABASE_URL=sqlite:///data/weeklyroulette.db
+ENV PYTHONPATH=/app/src
 
 # Expose port (not really needed for Socket Mode but good practice)
 EXPOSE 8080
 
-# Run the application
-CMD ["python", "-m", "src.main"]
+# Run the application (matching local makefile setup)
+CMD ["python", "-m", "main"]
