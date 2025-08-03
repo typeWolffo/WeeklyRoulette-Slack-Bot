@@ -48,14 +48,12 @@ def register_action_handlers(
 
             # Send confirmation message
             day_name = DAY_DISPLAY_NAMES[day]
-            status_text = "enabled" if enabled else "disabled"
             status_emoji = "✅" if enabled else "⏸️"
 
             confirmation_message = (
                 f"{status_emoji} **Configuration saved!**\n\n"
                 f"📅 Day: {day_name}\n"
                 f"🕒 Time: {time}\n"
-                f"🔄 Status: {status_text}\n\n"
             )
 
             if enabled:
