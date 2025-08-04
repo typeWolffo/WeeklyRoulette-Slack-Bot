@@ -22,18 +22,15 @@ class RouletteService:
     async def get_channel_members(self, channel_id: str) -> List[dict]:
         """Get all members of a channel."""
         try:
-            # Get channel members
             response = self.app.client.conversations_members(channel=channel_id)
             member_ids = response["members"]
 
-            # Filter out bots and get user info
             active_members = []
             for user_id in member_ids:
                 try:
                     user_info = self.app.client.users_info(user=user_id)
                     user = user_info["user"]
 
-                    # Skip bots, deactivated users, and deleted users
                     if (
                         not user.get("is_bot", False)
                         and not user.get("deleted", False)
@@ -50,7 +47,6 @@ class RouletteService:
                             }
                         )
                 except SlackApiError:
-                    # Skip users we can't fetch info for
                     continue
 
             return active_members
@@ -64,22 +60,18 @@ class RouletteService:
         if not members:
             return None
 
-        # Filter out the last selected user if there are other options
         available_members = members.copy()
         if last_selected_user_id and len(members) > 1:
             available_members = [m for m in members if m['id'] != last_selected_user_id]
             if available_members:
                 print(f"🙅 Excluding last selected user {last_selected_user_id} from selection")
             else:
-                # If filtering leaves no one, use all members (shouldn't happen with >1 member)
                 available_members = members
                 print(f"⚠️ Warning: Could not exclude last user, using all members")
 
-        # Shuffle the list to ensure better randomness
         shuffled_members = available_members.copy()
         random.shuffle(shuffled_members)
 
-        # Add some debug info
         print(f"🎲 Selecting from {len(shuffled_members)} members: {[m['name'] for m in shuffled_members]}")
         if last_selected_user_id:
             print(f"📅 Last selected user ID: {last_selected_user_id}")
@@ -91,7 +83,6 @@ class RouletteService:
 
     async def run_roulette(self, channel_id: str, test_mode: bool = False) -> dict:
         """Run roulette for a specific channel."""
-        # Get channel config
         config = self.db.get_channel_config(channel_id)
         if not config and not test_mode:
             return {
@@ -99,7 +90,6 @@ class RouletteService:
                 "error": "Channel is not configured. Use `/weeklyroulette config`",
             }
 
-        # Get channel members
         members = await self.get_channel_members(channel_id)
         if not members:
             return {
@@ -107,17 +97,14 @@ class RouletteService:
                 "error": "No active channel members found",
             }
 
-        # Select random member (avoiding consecutive selections)
         last_selected_user_id = config.last_selected_user if config else None
         selected_member = self.select_random_member(members, last_selected_user_id)
         if not selected_member:
             return {"success": False, "error": "Failed to select member"}
 
-        # Generate AI kudo rain message for non-test selections
         kudo_message = None
         if not test_mode and self.anthropic_service.is_configured():
             try:
-                # Use Slack mention format: <@USER_ID>
                 slack_handle = f"<@{selected_member['id']}>"
                 user_title = selected_member.get('title', 'Developer')
                 kudo_message = await self.anthropic_service.generate_kudo_rain(
@@ -128,19 +115,16 @@ class RouletteService:
             except Exception as e:
                 print(f"⚠️ Failed to generate kudo rain: {e}")
 
-        # Create result message
         member_count = len(members)
         message_prefix = (
             "🎲 **Test Roulette**" if test_mode else "🎯 **Weekly Roulette**"
         )
 
         if kudo_message and not test_mode:
-            # Use AI-generated kudo rain message
             message = (
                 f"✨ {kudo_message}"
             )
         else:
-            # Use standard message
             message = (
                 f"{message_prefix}"
                 f"🎉 Selected person: <@{selected_member['id']}>\n"
@@ -148,10 +132,9 @@ class RouletteService:
 
         if not test_mode and config:
             message += (
-                f"\n📅 Next selection: {config.day.title()} at {config.time}"
+                f"\n📅 Next selection: {config.day.title()} at {config.time} (Polish time)"
             )
 
-            # Update last selected user in database (only for real selections, not tests)
             try:
                 self.db.update_last_selected_user(channel_id, selected_member['id'])
             except Exception as e:
@@ -173,7 +156,6 @@ class RouletteService:
 
         if result["success"]:
             try:
-                # Send message to channel
                 self.app.client.chat_postMessage(
                     channel=channel_id,
                     text=result["message"],
@@ -212,7 +194,7 @@ class RouletteService:
         message = (
             f"{status_emoji} **WeeklyRoulette Status**\n\n"
             f"📅 Day: {day_name}\n"
-            f"🕒 Time: {config.time}\n"
+            f"🕒 Time: {config.time} (Polish time)\n"
             f"🔄 Status: {status_text}\n\n"
             f"💡 Use `/weeklyroulette config` to change settings"
         )

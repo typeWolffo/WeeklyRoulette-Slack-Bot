@@ -19,12 +19,10 @@ def register_action_handlers(
         ack()
 
         try:
-            # Extract form data
             view = body["view"]
             channel_id = view["private_metadata"]
             values = view["state"]["values"]
 
-            # Get selected values
             day_block = next(iter(values.values()))
             day = day_block["day_select"]["selected_option"]["value"]
 
@@ -36,30 +34,27 @@ def register_action_handlers(
                 enabled_block["enabled_select"]["selected_option"]["value"] == "true"
             )
 
-            # Create and save configuration
             config = ChannelConfig(
                 channel_id=channel_id, day=day, time=time, enabled=enabled
             )
 
             roulette_service.db.save_channel_config(config)
 
-            # Update scheduler
             scheduler_service.force_update_schedules()
 
-            # Send confirmation message
             day_name = DAY_DISPLAY_NAMES[day]
             status_emoji = "✅" if enabled else "⏸️"
 
             confirmation_message = (
                 f"{status_emoji} **Configuration saved!**\n\n"
                 f"📅 Day: {day_name}\n"
-                f"🕒 Time: {time}\n"
+                f"🕒 Time: {time} (Polish time)\n"
             )
 
             if enabled:
                 confirmation_message += (
                     f"🎯 First automatic selection will happen on "
-                    f"next {day_name.lower()} at {time}.\n\n"
+                    f"next {day_name.lower()} at {time} (Polish time).\n\n"
                 )
             else:
                 confirmation_message += (
@@ -77,7 +72,6 @@ def register_action_handlers(
         except Exception as e:
             print(f"❌ Error handling config modal submission: {e}")
 
-            # Send error message
             try:
                 client.chat_postMessage(
                     channel=channel_id,

@@ -21,7 +21,6 @@ class ChannelConfig:
     @classmethod
     def from_row(cls, row: sqlite3.Row) -> "ChannelConfig":
         """Create ChannelConfig from database row."""
-        # Handle optional last_selected_user column for backward compatibility
         try:
             last_selected_user = row["last_selected_user"]
         except (IndexError, KeyError):
@@ -54,7 +53,6 @@ class ChannelConfig:
         }
 
 
-# Valid days for scheduling
 VALID_DAYS = [
     "monday",
     "tuesday",
@@ -65,7 +63,6 @@ VALID_DAYS = [
     "sunday",
 ]
 
-# Day display names for UI
 DAY_DISPLAY_NAMES = {
     "monday": "Monday",
     "tuesday": "Tuesday",

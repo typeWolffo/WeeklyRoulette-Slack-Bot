@@ -25,10 +25,8 @@ def register_command_handlers(
 
         text = command.get("text", "").strip()
         channel_id = command["channel_id"]
-        # user_id = command["user_id"]  # For future use
 
         if not text or text == "help":
-            # Show help message
             help_message = (
                 "🎲 **WeeklyRoulette - Help**\n\n"
                 "**Available commands:**\n"
@@ -44,12 +42,10 @@ def register_command_handlers(
             return
 
         if text == "config":
-            # Show configuration modal
             _show_config_modal(client, command["trigger_id"], channel_id)
             return
 
         if text == "test":
-            # Run test roulette
             result = asyncio.run(
                 roulette_service.send_roulette_message(channel_id, test_mode=True)
             )
@@ -64,12 +60,10 @@ def register_command_handlers(
             return
 
         if text == "status":
-            # Show channel status
             status = roulette_service.get_channel_status(channel_id)
             respond(text=status["message"])
             return
 
-        # Unknown subcommand
         respond(
             text="❓ Unknown command. Use `/weeklyroulette help` to see available options."
         )
@@ -77,10 +71,8 @@ def register_command_handlers(
     def _show_config_modal(client: WebClient, trigger_id: str, channel_id: str) -> None:
         """Show configuration modal dialog."""
 
-        # Get current config if exists
         current_config = roulette_service.db.get_channel_config(channel_id)
 
-        # Create day options
         day_options = []
         for day in VALID_DAYS:
             day_options.append(
@@ -90,7 +82,6 @@ def register_command_handlers(
                 }
             )
 
-        # Create time options (business hours)
         time_options = []
         for hour in range(8, 19):  # 8:00 to 18:00
             for minute in [0, 15, 30, 45]:
@@ -103,7 +94,6 @@ def register_command_handlers(
                     }
                 )
 
-        # Default values
         default_day = current_config.day if current_config else "friday"
         default_time = current_config.time if current_config else "15:00"
         default_enabled = current_config.enabled if current_config else True
@@ -143,7 +133,7 @@ def register_command_handlers(
                 },
                 {
                     "type": "section",
-                    "text": {"type": "mrkdwn", "text": "🕒 *Choose time:*"},
+                    "text": {"type": "mrkdwn", "text": "🕒 *Choose time (Polish time):*"},
                     "accessory": {
                         "type": "static_select",
                         "placeholder": {

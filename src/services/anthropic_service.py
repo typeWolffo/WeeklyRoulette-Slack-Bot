@@ -26,25 +26,30 @@ class AnthropicService:
         Returns:
             A humorous one-sentence kudo rain message
         """
-        prompt = f"""Create a humorous, one-sentence roast that starts with '@channel Kudo rain for {user_name}' (who works as {user_title}) followed by pop culture references, but make it more teasing and sarcastic while still being workplace appropriate.
+        prompt = f"""Write exactly ONE humorous message that starts with "<!channel> Kudo rain for @{user_name}" followed by a playful roast with pop culture references.
 
-IMPORTANT: Use DIVERSE pop culture references. Avoid overused ones like Doctor Strange, Neo, Batman, Superman. Be creative!
+Requirements:
+- Start with "<!channel> Kudo rain for @{user_name}"
+- One sentence only, 40-60 words
+- Playfully sarcastic about {user_title} work habits
+- Use 1-2 DIVERSE pop culture references (do not stick to Marvel/DC heroes every time)
+- Workplace appropriate but cheeky
+- Return ONLY the message, no alternatives or explanations
 
-Make it:
-- One sentence only
-- More sarcastic and teasing (but not cruel)
-- Include 1-2 DIFFERENT pop culture references each time
-- Focus more on the roast than the praise
-- Around 40-60 words maximum
-- Use humor that gently calls out common workplace quirks (especially related to their role as {user_title})
+Examples of style:
+"<!channel> Kudo rain for @alex - like Hermione with a time-turner, somehow everywhere at once, but your real superpower is turning 30-min meetings into Groundhog Day!"
+- "<!channel> Kudo rain for @alex - like Hermione Granger with a time-turner, you're somehow everywhere at once, though your real
+superpower is making simple meetings feel like Groundhog Day!"
+- "<!channel> Kudo rain for @sam - channeling your inner Gordon Ramsay in code reviews and Bob Ross in debugging, you're a walking
+contradiction who somehow makes it work!"
+- "<!channel> Kudo rain for @jamie - like Sherlock Holmes solving mysteries, you find bugs nobody else can see, but unlike him you
+still get lost in your own directory structure!"
+- "<!channel> Kudo rain for @thomas - like Thanos wiped out half of all life with a snap of his fingers (let's not mention the
+deletion of half of the database)"
 
-Example styles (use DIFFERENT references):
-- "Kudo rain for @alex - like Hermione Granger with a time-turner, you're somehow everywhere at once, though your real superpower is making simple meetings feel like Groundhog Day!"
-- "Kudo rain for @sam - channeling your inner Gordon Ramsay in code reviews and Bob Ross in debugging, you're a walking contradiction who somehow makes it work!"
-- "Kudo rain for @jamie - like Sherlock Holmes solving mysteries, you find bugs nobody else can see, but unlike him you still get lost in your own directory structure!"
-- "Kudo rain for @thomas - like Thanos wiped out half of all life with a snap of his fingers (let's not mention the deletion of half of the database)"
+Create something FRESH and ORIGINAL with different references.
 
-Create something FRESH and ORIGINAL with different references:"""
+Write exactly one message:"""
 
         try:
             message = self.client.messages.create(
@@ -59,7 +64,6 @@ Create something FRESH and ORIGINAL with different references:"""
                 ]
             )
 
-            # Extract the text content from the response
             if message.content and len(message.content) > 0:
                 return message.content[0].text.strip()
             else:
@@ -71,7 +75,7 @@ Create something FRESH and ORIGINAL with different references:"""
 
     def _fallback_message(self, user_name: str, user_title: str = "Developer") -> str:
         """Generate a simple fallback message if AI fails."""
-        return f"Kudo rain for {user_name} - like a superhero {user_title} whose only power is making coffee disappear and Zoom calls awkward! 🎯☕"
+        return f"<!channel> Kudo rain for @{user_name} - like a superhero {user_title} whose only power is making coffee disappear and Zoom calls awkward! 🎯☕"
 
     def is_configured(self) -> bool:
         """Check if Anthropic API key is configured."""

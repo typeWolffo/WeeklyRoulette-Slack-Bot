@@ -15,36 +15,29 @@ class WeeklyRouletteBot:
 
     def __init__(self):
         """Initialize the WeeklyRoulette bot."""
-        # Initialize database
         init_database()
 
-        # Create Slack app with Socket Mode
         self.app = App(
             token=os.environ.get("SLACK_BOT_TOKEN"),
             signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
-            process_before_response=True,  # Enable async processing
+            process_before_response=True,
         )
 
-        # Initialize services
         self.roulette_service = RouletteService(self.app)
         self.scheduler_service = SchedulerService(self.roulette_service)
 
-        # Register handlers
         self._register_handlers()
 
-        # Start scheduler
         self.scheduler_service.start()
 
         print("🤖 WeeklyRoulette bot initialized successfully!")
 
     def _register_handlers(self) -> None:
         """Register all Slack event handlers."""
-        # Import handlers here to avoid circular imports
         from handlers.actions import register_action_handlers
         from handlers.commands import register_command_handlers
         from handlers.events import register_event_handlers
 
-        # Register all handlers
         register_event_handlers(self.app, self.roulette_service)
         register_command_handlers(
             self.app, self.roulette_service, self.scheduler_service

@@ -16,7 +16,6 @@ def register_event_handlers(app: App, roulette_service: RouletteService) -> None
         channel_id = event["channel"]
         user_id = event["user"]
 
-        # Welcome message when bot is mentioned
         welcome_message = (
             f"👋 Hello <@{user_id}>!\n\n"
             "🎲 I'm **WeeklyRoulette** - a bot for weekly random selection of channel members!\n\n"
@@ -41,7 +40,6 @@ def register_event_handlers(app: App, roulette_service: RouletteService) -> None
         user_id = event["user"]
 
         print(f"👤 New member {user_id} joined channel {channel_id}")
-        # Could potentially send a welcome DM or update member cache
 
     @app.event("member_left_channel")
     def handle_member_left(event: dict, client: WebClient) -> None:
@@ -50,6 +48,5 @@ def register_event_handlers(app: App, roulette_service: RouletteService) -> None
         user_id = event["user"]
 
         print(f"👋 Member {user_id} left channel {channel_id}")
-        # Could potentially update member cache
 
     print("✅ Event handlers registered")

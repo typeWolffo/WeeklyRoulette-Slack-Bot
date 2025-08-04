@@ -23,9 +23,7 @@ class DatabaseConnection:
     def _get_db_path(self) -> str:
         """Extract database path from DATABASE_URL."""
         if self.database_url.startswith("sqlite:///"):
-            # Remove sqlite:/// prefix
             db_path = self.database_url[10:]
-            # Create directory if it doesn't exist
             Path(db_path).parent.mkdir(parents=True, exist_ok=True)
             return db_path
         else:
@@ -59,14 +57,12 @@ class DatabaseConnection:
             """
         )
 
-        # Migration: Add last_selected_user column if it doesn't exist
         try:
             cursor.execute(
                 "ALTER TABLE channel_configs ADD COLUMN last_selected_user TEXT"
             )
             print("✅ Added last_selected_user column to existing database")
         except sqlite3.OperationalError:
-            # Column already exists
             pass
 
         self._connection.commit()
@@ -85,11 +81,9 @@ class DatabaseConnection:
         cursor = self.connect().cursor()
         now = datetime.now().isoformat()
 
-        # Check if config exists
         existing = self.get_channel_config(config.channel_id)
 
         if existing:
-            # Update existing config
             cursor.execute(
                 """
                 UPDATE channel_configs
@@ -99,7 +93,6 @@ class DatabaseConnection:
                 (config.day, config.time, int(config.enabled), config.last_selected_user, now, config.channel_id),
             )
         else:
-            # Insert new config
             cursor.execute(
                 """
                 INSERT INTO channel_configs (channel_id, day, time, enabled, last_selected_user, created_at, updated_at)
@@ -158,7 +151,6 @@ class DatabaseConnection:
             self._connection = None
 
 
-# Global database instance
 _db_instance: Optional[DatabaseConnection] = None
 
 
@@ -173,5 +165,5 @@ def get_database() -> DatabaseConnection:
 def init_database() -> None:
     """Initialize database (create tables)."""
     db = get_database()
-    db.connect()  # This will create tables via _create_tables()
+    db.connect()
     print("✅ Database initialized successfully!")

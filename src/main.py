@@ -6,11 +6,9 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Add src directory to Python path for imports
 src_path = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(src_path))
 
-# Import after path manipulation
 from bot import create_bot
 
 
@@ -38,14 +36,11 @@ def main() -> None:
     """Main entry point."""
     print("🚀 Starting WeeklyRoulette Slack Bot...")
 
-    # Load environment variables
     load_dotenv()
 
-    # Validate environment
     validate_environment()
 
     try:
-        # Create and start the bot
         bot = create_bot()
         bot.start()
 
