@@ -1,6 +1,6 @@
 # Fly.io configuration for WeeklyRoulette Slack Bot
-app = "weeklyroulette-bot"
-primary_region = "fra"     # Frankfurt - zmień na preferowany region
+app = "weeklyroulette-slack-bot"
+primary_region = "fra"           # Frankfurt - zmień na preferowany region
 
 [build]
 
@@ -11,27 +11,12 @@ DATABASE_URL = "sqlite:///data/weeklyroulette.db"
 source = "weeklyroulette_data"
 destination = "/data"
 
-[[services]]
-protocol = "tcp"
+[http_service]
 internal_port = 8080
-
-[[services.ports]]
-port = 80
-handlers = ["http"]
-
-[[services.ports]]
-port = 443
-handlers = ["tls", "http"]
-
-[services.concurrency]
-type = "connections"
-hard_limit = 25
-soft_limit = 20
-
-[[services.tcp_checks]]
-interval = "15s"
-timeout = "2s"
-grace_period = "1s"
+force_https = true
+auto_stop_machines = true
+auto_start_machines = true
+min_machines_running = 0
 
 [vm]
 cpu_kind = "shared"

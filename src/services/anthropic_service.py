@@ -26,7 +26,7 @@ class AnthropicService:
         Returns:
             A humorous one-sentence kudo rain message
         """
-        prompt = f"""Create a humorous, one-sentence roast that starts with 'Kudo rain for {user_name}' (who works as {user_title}) followed by pop culture references, but make it more teasing and sarcastic while still being workplace appropriate.
+        prompt = f"""Create a humorous, one-sentence roast that starts with '@channel Kudo rain for {user_name}' (who works as {user_title}) followed by pop culture references, but make it more teasing and sarcastic while still being workplace appropriate.
 
 IMPORTANT: Use DIVERSE pop culture references. Avoid overused ones like Doctor Strange, Neo, Batman, Superman. Be creative!
 
@@ -35,13 +35,14 @@ Make it:
 - More sarcastic and teasing (but not cruel)
 - Include 1-2 DIFFERENT pop culture references each time
 - Focus more on the roast than the praise
-- Around 50-80 words maximum
+- Around 40-60 words maximum
 - Use humor that gently calls out common workplace quirks (especially related to their role as {user_title})
 
 Example styles (use DIFFERENT references):
 - "Kudo rain for @alex - like Hermione Granger with a time-turner, you're somehow everywhere at once, though your real superpower is making simple meetings feel like Groundhog Day!"
 - "Kudo rain for @sam - channeling your inner Gordon Ramsay in code reviews and Bob Ross in debugging, you're a walking contradiction who somehow makes it work!"
 - "Kudo rain for @jamie - like Sherlock Holmes solving mysteries, you find bugs nobody else can see, but unlike him you still get lost in your own directory structure!"
+- "Kudo rain for @thomas - like Thanos wiped out half of all life with a snap of his fingers (let's not mention the deletion of half of the database)"
 
 Create something FRESH and ORIGINAL with different references:"""
 
