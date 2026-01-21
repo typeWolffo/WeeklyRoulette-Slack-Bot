@@ -200,3 +200,7 @@ htmlcov/
 # Distribution
 dist/
 build/
+
+# Miscellaneous
+*.md
+!README.md

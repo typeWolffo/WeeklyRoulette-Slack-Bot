@@ -83,8 +83,8 @@ def register_command_handlers(
             )
 
         time_options = []
-        for hour in range(8, 19):  # 8:00 to 18:00
-            for minute in [0, 15, 30, 45]:
+        for hour in range(9, 17):  # 9:00 to 16:55 (96 options, under Slack's 100 limit)
+            for minute in range(0, 60, 5):  # 5-minute intervals
                 time_str = f"{hour:02d}:{minute:02d}"
                 display_time = f"{hour:02d}:{minute:02d}"
                 time_options.append(
@@ -133,7 +133,10 @@ def register_command_handlers(
                 },
                 {
                     "type": "section",
-                    "text": {"type": "mrkdwn", "text": "🕒 *Choose time (Polish time):*"},
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "🕒 *Choose time (Polish time):*",
+                    },
                     "accessory": {
                         "type": "static_select",
                         "placeholder": {

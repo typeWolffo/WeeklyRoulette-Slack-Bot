@@ -12,9 +12,7 @@ class Settings:
     SLACK_SIGNING_SECRET: str = os.getenv("SLACK_SIGNING_SECRET", "")
 
     # Database Configuration
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL", "sqlite:///weeklyroulette.db"
-    )
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///weeklyroulette.db")
 
     # Application Configuration
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")

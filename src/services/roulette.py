@@ -43,7 +43,9 @@ class RouletteService:
                                 or user.get("real_name")
                                 or user.get("name"),
                                 "real_name": user.get("real_name", ""),
-                                "title": user.get("profile", {}).get("title", "Developer"),
+                                "title": user.get("profile", {}).get(
+                                    "title", "Developer"
+                                ),
                             }
                         )
                 except SlackApiError:
@@ -55,16 +57,20 @@ class RouletteService:
             print(f"Error fetching channel members for {channel_id}: {e}")
             return []
 
-    def select_random_member(self, members: List[dict], last_selected_user_id: Optional[str] = None) -> Optional[dict]:
+    def select_random_member(
+        self, members: List[dict], last_selected_user_id: Optional[str] = None
+    ) -> Optional[dict]:
         """Select a random member from the list, avoiding consecutive selections."""
         if not members:
             return None
 
         available_members = members.copy()
         if last_selected_user_id and len(members) > 1:
-            available_members = [m for m in members if m['id'] != last_selected_user_id]
+            available_members = [m for m in members if m["id"] != last_selected_user_id]
             if available_members:
-                print(f"🙅 Excluding last selected user {last_selected_user_id} from selection")
+                print(
+                    f"🙅 Excluding last selected user {last_selected_user_id} from selection"
+                )
             else:
                 available_members = members
                 print(f"⚠️ Warning: Could not exclude last user, using all members")
@@ -72,7 +78,9 @@ class RouletteService:
         shuffled_members = available_members.copy()
         random.shuffle(shuffled_members)
 
-        print(f"🎲 Selecting from {len(shuffled_members)} members: {[m['name'] for m in shuffled_members]}")
+        print(
+            f"🎲 Selecting from {len(shuffled_members)} members: {[m['name'] for m in shuffled_members]}"
+        )
         if last_selected_user_id:
             print(f"📅 Last selected user ID: {last_selected_user_id}")
 
@@ -106,7 +114,7 @@ class RouletteService:
         if not test_mode and self.anthropic_service.is_configured():
             try:
                 slack_handle = f"<@{selected_member['id']}>"
-                user_title = selected_member.get('title', 'Developer')
+                user_title = selected_member.get("title", "Developer")
                 kudo_message = await self.anthropic_service.generate_kudo_rain(
                     slack_handle, user_title
                 )
@@ -121,22 +129,15 @@ class RouletteService:
         )
 
         if kudo_message and not test_mode:
-            message = (
-                f"✨ {kudo_message}"
-            )
+            message = f"✨ {kudo_message}"
         else:
             message = (
-                f"{message_prefix}"
-                f"🎉 Selected person: <@{selected_member['id']}>\n"
+                f"{message_prefix}" f"🎉 Selected person: <@{selected_member['id']}>\n"
             )
 
         if not test_mode and config:
-            message += (
-                f"\n📅 Next selection: {config.day.title()} at {config.time} (Polish time)"
-            )
-
             try:
-                self.db.update_last_selected_user(channel_id, selected_member['id'])
+                self.db.update_last_selected_user(channel_id, selected_member["id"])
             except Exception as e:
                 print(f"⚠️ Failed to update last selected user: {e}")
 

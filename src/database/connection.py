@@ -90,7 +90,14 @@ class DatabaseConnection:
                 SET day = ?, time = ?, enabled = ?, last_selected_user = ?, updated_at = ?
                 WHERE channel_id = ?
             """,
-                (config.day, config.time, int(config.enabled), config.last_selected_user, now, config.channel_id),
+                (
+                    config.day,
+                    config.time,
+                    int(config.enabled),
+                    config.last_selected_user,
+                    now,
+                    config.channel_id,
+                ),
             )
         else:
             cursor.execute(
@@ -129,7 +136,7 @@ class DatabaseConnection:
             SET last_selected_user = ?, updated_at = ?
             WHERE channel_id = ?
             """,
-            (user_id, now, channel_id)
+            (user_id, now, channel_id),
         )
 
         self._connection.commit()

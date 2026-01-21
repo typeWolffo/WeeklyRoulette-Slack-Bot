@@ -46,14 +46,12 @@ def register_action_handlers(
             status_emoji = "✅" if enabled else "⏸️"
 
             confirmation_message = (
-                f"{status_emoji} **Configuration saved!**\n\n"
-                f"📅 Day: {day_name}\n"
-                f"🕒 Time: {time} (Polish time)\n"
+                f"{status_emoji} Saved\n\n" f"Day: {day_name}\n" f"Time: {time}\n"
             )
 
             if enabled:
                 confirmation_message += (
-                    f"🎯 First automatic selection will happen on "
+                    f"Selection will happen on "
                     f"next {day_name.lower()} at {time} (Polish time).\n\n"
                 )
             else:

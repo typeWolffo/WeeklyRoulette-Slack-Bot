@@ -3,13 +3,14 @@
 import asyncio
 import threading
 from datetime import datetime, time
-from zoneinfo import ZoneInfo
 from typing import Dict, List
+from zoneinfo import ZoneInfo
 
 import schedule
 
 from database.connection import get_database
 from database.models import ChannelConfig
+
 from .roulette import RouletteService
 
 
@@ -36,10 +37,12 @@ class SchedulerService:
             Time in HH:MM format (UTC)
         """
         try:
-            hour, minute = map(int, time_str.split(':'))
+            hour, minute = map(int, time_str.split(":"))
 
             today = datetime.now(self.poland_tz).date()
-            polish_time = datetime.combine(today, time(hour, minute), tzinfo=self.poland_tz)
+            polish_time = datetime.combine(
+                today, time(hour, minute), tzinfo=self.poland_tz
+            )
 
             utc_time = polish_time.astimezone(self.utc_tz)
 
@@ -86,9 +89,7 @@ class SchedulerService:
         utc_time = self._convert_polish_time_to_utc(config.time)
 
         job = (
-            getattr(schedule.every(), config.day)
-            .at(utc_time)
-            .do(run_channel_roulette)
+            getattr(schedule.every(), config.day).at(utc_time).do(run_channel_roulette)
         )
         self._scheduled_jobs[job_key] = job
 

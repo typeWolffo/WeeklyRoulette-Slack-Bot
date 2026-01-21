@@ -4,7 +4,6 @@ primary_region = "fra"
 [build]
 
 [env]
-DATABASE_URL = "sqlite:///data/weeklyroulette.db"
 
 [[mounts]]
 source = "weeklyroulette_data"
