@@ -1,33 +1,38 @@
-# Use Python 3.11 slim image
-FROM python:3.11-slim
+# Build stage
+FROM golang:1.22-alpine AS builder
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
-
-# Create app directory
 WORKDIR /app
 
-# Copy dependency files
-COPY requirements.txt .
+# Install ca-certificates for HTTPS
+RUN apk --no-cache add ca-certificates tzdata
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy go mod files
+COPY go.mod go.sum ./
+RUN go mod download
 
-# Copy application code
-COPY src/ ./src/
+# Copy source
+COPY cmd/ ./cmd/
+COPY internal/ ./internal/
+
+# Build
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /weeklyroulette ./cmd/weeklyroulette
+
+# Runtime stage
+FROM alpine:3.19
+
+# Install ca-certificates and timezone data
+RUN apk --no-cache add ca-certificates tzdata
+
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /weeklyroulette .
 
 # Create volume for database
 RUN mkdir -p /data
 
 # Set environment variables
-ENV DATABASE_URL=sqlite:///data/weeklyroulette.db
-ENV PYTHONPATH=/app/src
+ENV DATABASE_URL=/data/weeklyroulette.db
 
-# Expose port (not really needed for Socket Mode but good practice)
-EXPOSE 8080
-
-# Run the application (matching local makefile setup)
-CMD ["python", "-m", "main"]
+# Run
+CMD ["./weeklyroulette"]

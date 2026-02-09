@@ -3,15 +3,12 @@ primary_region = "fra"
 
 [build]
 
-[env]
-
 [[mounts]]
 source = "weeklyroulette_data"
 destination = "/data"
 
-
 [processes]
-app = "python -m main"
+app = "./weeklyroulette"
 
 [vm]
 cpu_kind = "shared"
