@@ -196,7 +196,7 @@ func (s *AnthropicService) GenerateKudoRain(ctx context.Context, userName, userT
 	)
 
 	message, err := s.client.Messages.New(ctx, anthropic.MessageNewParams{
-		Model:     anthropic.ModelClaude3_5HaikuLatest,
+		Model:     anthropic.ModelClaudeHaiku4_5,
 		MaxTokens: 150,
 		Messages: []anthropic.MessageParam{
 			anthropic.NewUserMessage(anthropic.NewTextBlock(prompt)),
